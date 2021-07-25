@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import Typography from '@material-ui/core/Typography'
 import MatrixMultiplication from './components/MatrixMultiplication'
+import { importLocalPythonCode } from './pythonCode'
 
 const styles = (theme) => ({
   progress: {
@@ -19,23 +20,19 @@ class App extends Component {
     super(props)
 
     this.state = {
-      pyodide: null
+      pyodide: null,
+      localPythonCode: null
     }
   }
 
-  componentDidMount() {
-    window
-      .loadPyodide({ indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.17.0/full/' })
-      .then((pyodide) => {
-        this.setState({ pyodide })
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+  async componentDidMount() {
+    const pyodide = await window.loadPyodide({ indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.17.0/full/' })
+    const localPythonCode = await importLocalPythonCode(pyodide)
+    this.setState({ pyodide, localPythonCode })
   }
 
   render() {
-    const { pyodide } = this.state
+    const { pyodide, localPythonCode } = this.state
     const { classes } = this.props
 
     return pyodide == null ? (
@@ -45,7 +42,7 @@ class App extends Component {
       </div>
     ) : (
       <div>
-        <MatrixMultiplication pyodide={pyodide} />
+        <MatrixMultiplication generator={localPythonCode.generateMatmulExercise} />
       </div>
     )
   }

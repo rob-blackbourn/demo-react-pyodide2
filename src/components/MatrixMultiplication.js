@@ -6,7 +6,6 @@ import Paper from '@material-ui/core/Paper'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
-import { generateDotProductExercise } from '../pythonCode'
 import Matrix from './Matrix'
 import { updateMatrixCell, isMatrixEqual } from '../utils'
 
@@ -40,9 +39,8 @@ class MatrixMultiplication extends Component {
     super(props)
 
     this.state = {
-      pyodide: props.pyodide,
-      maxNumberOfRows: 4,
-      maxNumberOfColumns: 4,
+      maxNumberOfRows: 3,
+      maxNumberOfColumns: 3,
       hasExercise: false,
       isGenerating: false,
       m: 1,
@@ -56,8 +54,9 @@ class MatrixMultiplication extends Component {
   }
 
   generateExercise = () => {
-    const { maxNumberOfRows, maxNumberOfColumns, pyodide } = this.state
-    generateDotProductExercise(pyodide, maxNumberOfRows, maxNumberOfColumns)
+    const { maxNumberOfRows, maxNumberOfColumns } = this.state
+    this.props
+      .generator(maxNumberOfRows, maxNumberOfColumns)
       .then((result) => {
         this.setState({
           ...result,
@@ -65,7 +64,6 @@ class MatrixMultiplication extends Component {
           hasExercise: true,
           isGenerating: false
         })
-        console.log(result)
       })
       .catch((error) => {
         console.log(error)
@@ -144,7 +142,7 @@ class MatrixMultiplication extends Component {
 
 MatrixMultiplication.propTypes = {
   classes: PropTypes.object,
-  pyodide: PropTypes.object
+  generator: PropTypes.func
 }
 
 export default withStyles(styles)(MatrixMultiplication)

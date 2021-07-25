@@ -34,15 +34,9 @@ const styles = (theme) => ({
   }
 })
 
-const getShape = (matrix) => {
-  return [matrix.length, matrix.length === 0 ? 0 : matrix[0].length]
-}
-
 class Matrix extends Component {
   render() {
     const { values, readOnly, onChange, classes } = this.props
-    const [numberOfRows, numberOfColumns] = getShape(values)
-    console.log(values, numberOfRows, numberOfColumns)
 
     return (
       <div className={classes.divTable}>
